@@ -1,0 +1,51 @@
+{% extends 'layouts/main.html' %}
+
+{% block content %}
+<div class="container mt-5" style="padding-top: 80px;">
+    <h2 class="mb-4"><i class="fas fa-calendar-alt"></i> Your Bookings</h2>
+
+    {% if bookings %}
+        <div class="row">
+            {% for booking in bookings %}
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header {% if booking.is_paid %}bg-success{% else %}bg-warning{% endif %} text-white">
+                        <h5 class="mb-0">{{ booking.space.name }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Category:</strong> {{ booking.space.category }}</p>
+                        <p><strong>From:</strong> {{ booking.from_date }}</p>
+                        <p><strong>To:</strong> {{ booking.to_date }}</p>
+                        <p><strong>Total Cost:</strong> <span class="text-success fs-5">₹{{ booking.total_cost }}</span></p>
+                        <p><strong>Status:</strong> 
+                            {% if booking.is_paid %}
+                                <span class="badge bg-success">Paid</span>
+                            {% else %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% endif %}
+                        </p>
+                        <p class="text-muted small">Booked on: {{ booking.created_at|date:"F d, Y" }}</p>
+                        
+                        {% if booking.is_paid %}
+                            <a href="{% url 'invoice' booking.id %}" class="btn btn-primary w-100">
+                                <i class="fas fa-file-invoice"></i> Generate Invoice
+                            </a>
+                        {% else %}
+                            <a href="{% url 'payment' booking.id %}" class="btn btn-warning w-100">
+                                <i class="fas fa-credit-card"></i> Complete Payment
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <h5><i class="fas fa-info-circle"></i> No bookings yet</h5>
+            <p class="mb-0">Start booking your favorite spaces now!</p>
+            <a href="{% url 'rentals' %}" class="btn btn-primary mt-3">Browse Rentals</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

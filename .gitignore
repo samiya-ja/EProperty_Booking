@@ -1,0 +1,49 @@
+
+venv/
+env/
+*.venv
+
+
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+
+*.log
+*.pot
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+
+
+media/
+
+
+.env
+*.env
+.env.local
+
+
+*.sql
+backup.sql
+
+# Docker
+.dockerignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+
+# OS
+.DS_Store
+Thumbs.db

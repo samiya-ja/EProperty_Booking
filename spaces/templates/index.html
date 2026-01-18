@@ -1,0 +1,28 @@
+{% extends 'layouts/main.html' %}
+{%block title %}Home | Book Your Spot{% endblock %}
+<!--#bootstrap carousel slider-->
+
+{% block content %}
+{% include 'slider.html' %}
+<div class="container my-5 pt-5">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1>Welcome to Book Your Spot</h1>
+            {% if not user.is_authenticated %}
+            <div class = "row py-lg-5">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <h1 class="fw-light">Rentals</h1>
+                <p class="lead text-muted">Explore our wide range of rental spaces available for your business needs.</p>
+                <p>
+                    <a href="{% url 'login' %}" class="btn btn-primary my-2">Already a Member</a>
+                    <a href="{% url 'register' %}" class="btn btn-secondary my-2">Register</a>
+                </p>
+            </div>
+            {% endif %}
+        </div>
+        </div>
+    </div>
+</div>
+
+ 
+{% endblock %}

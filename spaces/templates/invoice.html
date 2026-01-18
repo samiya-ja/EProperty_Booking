@@ -1,0 +1,117 @@
+{% extends 'layouts/main.html' %}
+
+{% block content %}
+<div class="container mt-5" style="padding-top: 80px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg" id="invoice">
+                <div class="card-body p-5">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <h2 class="text-primary">INVOICE</h2>
+                        <p class="text-muted">Book Your Spot</p>
+                    </div>
+
+                    <hr>
+
+                    <!-- Invoice Details -->
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <p><strong>Invoice Number:</strong></p>
+                            <p class="text-muted">{{ invoice_number }}</p>
+                        </div>
+                        <div class="col-6 text-end">
+                            <p><strong>Invoice Date:</strong></p>
+                            <p class="text-muted">{{ invoice_date|date:"F d, Y" }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Customer Details -->
+                    <div class="mb-4">
+                        <h5>Billed To:</h5>
+                        <p class="mb-0"><strong>{{ booking.user.username }}</strong></p>
+                        <p class="text-muted mb-0">{{ booking.user.email }}</p>
+                    </div>
+
+                    <!-- Booking Details -->
+                    <h5 class="mb-3">Booking Details:</h5>
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Description</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Property Name</td>
+                                <td>{{ space.name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Category</td>
+                                <td>{{ space.category }}</td>
+                            </tr>
+                            <tr>
+                                <td>From Date</td>
+                                <td>{{ booking.from_date }}</td>
+                            </tr>
+                            <tr>
+                                <td>To Date</td>
+                                <td>{{ booking.to_date }}</td>
+                            </tr>
+                            <tr>
+                                <td>Rent Type</td>
+                                <td>{{ space.rent_type }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Total -->
+                    <div class="text-end mb-4">
+                        <h4>Total Amount: <span class="text-success">₹{{ booking.total_cost }}</span></h4>
+                        <p class="text-success"><strong>Status: PAID</strong></p>
+                    </div>
+
+                    <hr>
+
+                    <!-- Footer -->
+                    <div class="text-center text-muted">
+                        <p class="mb-0">Thank you for your business!</p>
+                        <p class="small">This is a computer-generated invoice.</p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mt-4 d-flex gap-2">
+                        <button onclick="window.print()" class="btn btn-primary flex-fill">
+                            <i class="fas fa-print"></i> Print Invoice
+                        </button>
+                        <a href="{% url 'my_bookings' %}" class="btn btn-outline-secondary flex-fill">
+                            <i class="fas fa-arrow-left"></i> Back to Bookings
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #invoice, #invoice * {
+            visibility: visible;
+        }
+        #invoice {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+        .btn {
+            display: none !important;
+        }
+    }
+</style>
+{% endblock %}

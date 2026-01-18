@@ -1,0 +1,64 @@
+{% extends 'layouts/main.html' %}
+{%block title %}Rentals | Book Your Spot{% endblock %}
+{% block content %}
+    <section class="bg-light py-4 my-5">
+        <div class ="container">
+            <div class="row">
+                <div class="col-12">
+                    <h4 class="mb-3">{{category}}</h4>
+                        <hr style ="border-color:#b8bfc2;">
+                </div>
+                {% for item in businessSpace %}
+                <div class="col-md-4 col-lg-3">
+                    <div class ="card my-3"> 
+                        <div class = "card-body">
+                            <h5 class="card-title text-primary">{{item.name}}-{{item.category}}</h5>
+                            <img src="{{item.image.url}}" class="card-img-top" alt="{{item.name}}">
+                            <p class ="card-text">{{item.category}}</p>
+                            <p class ="card-text">{{item.description}}</p>
+                            <p class="card-text">
+                                <span style="background-color: #28a745; color: white; padding: 4px 8px; border-radius: 5px; font-weight: bold; margin-right: 5px;">
+                                 Rs. {{ item.cost }}
+                                </span>
+
+                                 <span style="color: #6c757d; font-size: 0.9em;">
+                                  / {{ item.rent_type }}
+                                    </span>
+                                    </p>
+                            {%if item.availability %}
+                            <p class ="card-text">Available</p>
+                            {% else %}
+                            <p class ="card-text">Not Available</p>
+                            {% endif %}
+                            {% if item.status == "booked" %}
+                                <p class="card-text">
+                                    <span style="color:red; font-weight:bold;">
+                                        Booked till {{ item.booked_till|date:"d M Y" }}
+                                    </span>
+                                    <br>
+                                    <span style="color:green;">
+                                        Available from {{ item.available_from|date:"d M Y" }}
+                                    </span>
+                                </p>
+
+                            {% elif item.status == "available" %}
+                                <p class="card-text" style="color:green; font-weight:bold;">
+                                    Available from {{ item.available_from|date:"d M Y" }}
+                                </p>
+
+                            {% else %}
+                                <p class="card-text" style="color:gray; font-weight:bold;">
+                                    Not Available
+                                </p>
+                            {% endif %}
+
+                            <a href="{% url 'booking' item.id %}" class="btn btn-outline-primary btn-sm">
+                            Book Now
+                            </a>
+                    </div>
+                </div>
+                </div>
+                {% endfor %}   
+        </div>
+    </section>
+{% endblock %}

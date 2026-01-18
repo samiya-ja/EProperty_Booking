@@ -1,0 +1,23 @@
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+extend-exclude = '''
+/(
+    \.git
+  | __pycache__
+  | \.venv
+  | venv
+  | migrations
+  | static
+)/
+'''
+
+[tool.isort]
+profile = "black"
+skip_glob = ["*/migrations/*"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "emall.settings"
+python_files = ["test_*.py", "*_test.py", "tests.py"]
+addopts = "--cov=spaces --cov-report=html --cov-report=term"
+testpaths = ["spaces"]

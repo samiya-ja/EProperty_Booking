@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+.carousel-item img{
+    object-fit: cover;
+    object-position: top;
+    height: 20vh;
+    overflow: hidden;
+}
+html{
+    font-size: medium;
+}
+body{
+    font-family: 'Roboto', sans-serif;
+}
+a{
+    text-decoration: none;
+}
