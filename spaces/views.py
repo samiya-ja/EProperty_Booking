@@ -22,7 +22,7 @@ def login(request):
         username_or_email = request.POST.get("username")
         pword = request.POST.get("password")
 
-        # Find username if email was entered
+        # username or mail 
         if "@" in username_or_email:
             try:
                 user_obj = User.objects.get(email=username_or_email)
@@ -35,7 +35,7 @@ def login(request):
         user = authenticate(request, username=username, password=pword)
 
         if user is not None:
-            auth_login(request, user)  # Use auth_login to avoid name conflict with view
+            auth_login(request, user) 
             return redirect("home")
         else:
             messages.error(request, "Invalid credentials")
@@ -55,7 +55,7 @@ def register(request):
         pword = request.POST.get("password")
         cpword = request.POST.get("cpassword")  # Confirm password
 
-        # 1. Validation Checks
+        #  Checks
         if User.objects.filter(username=uname).exists():
             messages.error(request, "Username already taken")
             return redirect("register")
@@ -68,7 +68,7 @@ def register(request):
             messages.error(request, "Passwords do not match")
             return redirect("register")
 
-        # 2. Create User (Hashed Password)
+        # user creation
         new_user = User.objects.create_user(username=uname, email=email, password=pword)
         new_user.save()
 
@@ -101,7 +101,7 @@ def booking(request, space_id):
         from_date_str = request.POST.get("from_date")
         to_date_str = request.POST.get("to_date")
 
-        # Validation: Check if dates are provided
+        #  Check dates provided
         if not from_date_str or not to_date_str:
             messages.error(request, "Please select both from and to dates")
             return render(request, "booking.html", context)
@@ -117,17 +117,17 @@ def booking(request, space_id):
             messages.error(request, "Invalid date format")
             return render(request, "booking.html", context)
 
-        # CONSTRAINT 1: From date must be today or future
+        #  From date must be today or future
         if from_date < today:
             messages.error(request, "From date cannot be in the past")
             return render(request, "booking.html", context)
 
-        # CONSTRAINT 2: To date must be after from date
+        #  To date after from date
         if from_date > to_date:
             messages.error(request, "To date must be after from date")
             return render(request, "booking.html", context)
 
-        # Additional: Same day booking check (optional - remove if you allow same day)
+        #  Same day booking check 
         if from_date == to_date:
             messages.error(request, "Booking must be for at least 2 days")
             return render(request, "booking.html", context)
@@ -148,7 +148,7 @@ def booking(request, space_id):
         else:
             total_cost = 0
 
-        # CONSTRAINT 3: Better availability check - find conflicting bookings
+        #  availability check - find conflicting bookings
         conflicting_bookings = Booking.objects.filter(
             space=space, from_date__lte=to_date, to_date__gte=from_date
         )
@@ -164,13 +164,13 @@ def booking(request, space_id):
                 }
             )
 
-            # Show next available date if booked
+            #  next available date 
             if is_booked:
                 last_booking = conflicting_bookings.order_by("-to_date").first()
                 next_available = last_booking.to_date + timedelta(days=1)
                 context["next_available"] = next_available
 
-                # Check if there's another booking after this
+                # another booking after this
                 next_booking = (
                     Booking.objects.filter(
                         space=space, from_date__gt=last_booking.to_date
@@ -180,7 +180,7 @@ def booking(request, space_id):
                 )
 
                 if next_booking:
-                    # Calculate day before next booking
+                    # no of days before next booking
                     next_booking_end = next_booking.from_date - timedelta(days=1)
                     context["next_booking_start"] = next_booking_end
 
@@ -198,7 +198,7 @@ def booking(request, space_id):
                 )
                 return render(request, "booking.html", context)
             else:
-                # Store booking details in session not DB yet
+                # Store booking details in session not DB
                 request.session["pending_booking"] = {
                     "space_id": space.id,
                     "from_date": from_date_str,
@@ -207,7 +207,7 @@ def booking(request, space_id):
                     "days": days,
                 }
                 # Redirect to payment page
-                return redirect("payment_new")  # New URL for payment
+                return redirect("payment_new")  # 
 
     return render(request, "booking.html", context)
 
@@ -249,7 +249,7 @@ def rentalsview(request, category):
 
 @login_required(login_url="login")
 def payment(request):
-    # Get pending booking from session
+    #   booking w/o payement from session
     pending = request.session.get("pending_booking")
 
     if not pending:
@@ -297,14 +297,14 @@ def process_payment(request):
             del request.session["pending_booking"]
             return redirect("rentals")
 
-        # NOW create the booking (locked!)
+        # booking lock
         booking = Booking.objects.create(
             user=request.user,
             space=space,
             from_date=from_date,
             to_date=to_date,
             total_cost=pending["total_cost"],
-            is_paid=True,  # Mark as paid immediately
+            is_paid=True,  # Mark as paid
         )
 
         # Clear session
@@ -343,4 +343,4 @@ def invoice(request, booking_id):
 def logout_page(request):
     auth_logout(request)
     messages.success(request, "You have been logged out.")
-    return redirect("home")  # Or redirect to 'home'
+    return redirect("home")  # redirect to 'home'
