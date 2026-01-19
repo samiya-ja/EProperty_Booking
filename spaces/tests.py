@@ -136,3 +136,25 @@ class MyBookingsViewTest(TestCase):
     def test_my_bookings_requires_login(self):
         response = self.client.get(reverse("my_bookings"))
         self.assertEqual(response.status_code, 302)
+
+    def test_booking_cost_calculation(self):
+            """Test if the total cost is calculated correctly for 3 days"""
+            self.client.login(username="testuser", password="testpass")
+            
+            # We simulate a 3-day booking (Today, Tomorrow, Day after)
+            # 1000 per day * 3 days should = 3000
+            from_date = date.today()
+            to_date = date.today() + timedelta(days=2) 
+            
+            response = self.client.post(
+                reverse("booking", kwargs={"space_id": self.space.id}),
+                {
+                    "action": "check",
+                    "from_date": from_date.strftime("%Y-%m-%d"),
+                    "to_date": to_date.strftime("%Y-%m-%d"),
+                }
+            )
+            
+            # Check if the calculated cost in the context is exactly 3000
+            self.assertEqual(response.context['total_cost'], Decimal("3000.00"))
+            self.assertEqual(response.context['days'], 3)
